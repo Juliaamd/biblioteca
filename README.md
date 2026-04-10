@@ -6,6 +6,8 @@ Escolhemos desenvolver um sistema de biblioteca pois ele permite aplicar conceit
 
 Além disso, é um sistema que gostríamos de ter na faculdade para fazer melhor uso do acervo disponível em nossa biblioteca.
 
+---
+
 ## Funcionalidades iniciais
 
 - Listagem de livros
