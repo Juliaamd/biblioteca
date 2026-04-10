@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca — UNIALFA</title>
+ 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+ 
+<style>
+  :root {
+    --vermelho:     #C0000C;
+    --vermelho-esc: #8B0000;
+    --ouro:         #C9A84C;
+    --ouro-claro:   #E8C97A;
+    --creme:        #F9F5EE;
+    --texto:        #1A1008;
+    --cinza:        #7A6E65;
+    --sidebar-w:    240px;
+  }
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    min-height: 100vh;
+    display: flex;
+    font-family: 'Crimson Pro', serif;
+    background-color: var(--creme);
+    color: var(--texto);
+  }
+ 
+  /* ═══════════════════════════════
+     SIDEBAR
+  ═══════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: linear-gradient(175deg, var(--vermelho-esc) 0%, #5A0006 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    overflow: hidden;
+  }
+ 
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      90deg, transparent, transparent 28px,
+      rgba(255,255,255,0.03) 28px, rgba(255,255,255,0.03) 30px
+    );
+    pointer-events: none;
+  }
+ 
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(201,168,76,0.25);
+    position: relative;
+  }
+ 
+  .sidebar-logo .icone { font-size: 32px; display: block; margin-bottom: 6px; }
+  .sidebar-logo h2 { font-family: 'Cinzel', serif; font-weight: 900; font-size: 22px; letter-spacing: 4px; }
+  .sidebar-logo small { font-size: 11px; color: var(--ouro-claro); letter-spacing: 1.5px; font-style: italic; }
+ 
+  nav { padding: 20px 12px; flex: 1; }
+  .nav-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 2.5px; color: rgba(255,255,255,0.4); padding: 0 12px; margin: 16px 0 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-size: 15px; color: rgba(255,255,255,0.85); letter-spacing: 0.3px; user-select: none; }
+  .nav-item:hover, .nav-item.ativo { background: rgba(255,255,255,0.12); color: white; }
+  .nav-item.ativo { background: rgba(201,168,76,0.2); color: var(--ouro-claro); }
+  .nav-item .emoji { font-size: 18px; }
+ 
+  /* ═══════════════════════════════
+     CONTEÚDO PRINCIPAL
+  ═══════════════════════════════ */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: white; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #EDE8DF; position: sticky; top: 0; z-index: 50; }
+  .topbar h1 { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: var(--texto); letter-spacing: 1px; }
+  .badge-user { background: #EDE8DF; padding: 6px 14px; border-radius: 99px; font-size: 13px; color: var(--cinza); font-family: 'Cinzel', serif; letter-spacing: 1px; }
+  .corpo { padding: 32px; flex: 1; }
+ 
+  /* ── CARDS DE STATS ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 36px; }
+  .stat-card { background: white; border-radius: 12px; padding: 24px 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 18px; transition: transform 0.2s; border-left: 4px solid transparent; }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .stat-card:nth-child(1) { border-color: var(--ouro); }
+  .stat-card:nth-child(2) { border-color: #2E9E54; }
+  .stat-card:nth-child(3) { border-color: var(--vermelho); }
+  .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .stat-card:nth-child(1) .stat-icon { background: #FBF3DC; }
+  .stat-card:nth-child(2) .stat-icon { background: #E6F4EC; }
+  .stat-card:nth-child(3) .stat-icon { background: #FAEAEA; }
+  .stat-info p { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cinza); margin-bottom: 4px; }
+  .stat-info span { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 900; color: var(--texto); line-height: 1; }
+ 
+  /* ── FORMULÁRIO ── */
+  .form-section { background: white; border-radius: 12px; padding: 28px 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 32px; }
+  .form-section h3 { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #EDE8DF; }
+  .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .form-campo { display: flex; flex-direction: column; gap: 6px; }
+  .form-campo label { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--cinza); }
+  .form-campo input { padding: 10px 14px; border: 1.5px solid #DDD6C8; border-radius: 6px; font-family: 'Crimson Pro', serif; font-size: 16px; color: var(--texto); background: var(--creme); transition: border-color 0.2s; outline: none; }
+  .form-campo input:focus { border-color: var(--vermelho); background: white; }
+  .btn-primary { padding: 11px 28px; background: linear-gradient(135deg, var(--vermelho), var(--vermelho-esc)); color: white; border: none; border-radius: 6px; font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: transform 0.15s; box-shadow: 0 4px 16px rgba(192,0,12,0.25); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .status-msg { font-size: 14px; color: var(--cinza); font-style: italic; opacity: 0; transition: opacity 0.3s; }
+  .status-msg.visivel { opacity: 1; }
+ 
+  /* ── LISTA E GRID ── */
+  .lista-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .lista-header h3 { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--cinza); }
+  .busca-input { padding: 9px 16px; border: 1.5px solid #DDD6C8; border-radius: 6px; font-family: 'Crimson Pro', serif; font-size: 15px; color: var(--texto); background: white; width: 240px; outline: none; }
+  #lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 22px; min-height: 200px; }
+  .livro { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.08); transition: transform 0.3s; animation: fadeUp 0.4s ease both; display: flex; flex-direction: column; }
+  .livro:hover { transform: translateY(-8px); box-shadow: 0 16px 32px rgba(0,0,0,0.14); }
+  .livro-capa { width: 100%; height: 210px; object-fit: cover; display: block; background: #EDE8DF; }
+  .livro-info { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .livro-titulo { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--texto); line-height: 1.3; }
+  .livro-autor { font-size: 13px; color: var(--cinza); font-style: italic; }
+  .livro-categoria { font-size: 11px; color: #AAA; text-transform: uppercase; letter-spacing: 1px; font-family: 'Cinzel', serif; }
+  .livro-status { margin-top: 8px; display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-family: 'Cinzel', serif; font-weight: 600; }
+  .livro-status.disp { background: #E6F4EC; color: #1E7A40; }
+  .livro-status.emp { background: #FAEAEA; color: var(--vermelho); }
+  .livro-acoes { display: flex; gap: 6px; margin-top: 10px; }
+  .btn-acao { flex: 1; padding: 7px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Cinzel', serif; font-size: 10px; transition: opacity 0.2s; }
+  .btn-toggle { background: #EDE8DF; color: var(--texto); }
+  .btn-remover { background: #FAEAEA; color: var(--vermelho); }
+ 
+  /* ═══════════════════════════════
+     PAGINAÇÃO (DESTAQUE)
+  ═══════════════════════════════ */
+  .paginacao-container {
+    margin-top: 40px;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #EDE8DF;
+  }
+ 
+  .paginacao-botoes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+ 
+  .btn-pag {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #DDD6C8;
+    background: white;
+    border-radius: 8px;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--texto);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+ 
+  .btn-pag:hover {
+    border-color: var(--vermelho);
+    color: var(--vermelho);
+    transform: translateY(-2px);
+  }
+ 
+  .btn-pag.ativo {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+    color: white;
+    box-shadow: 0 4px 12px rgba(192,0,12,0.2);
+  }
+
+  .pag-info {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--cinza);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+ 
+  .vazio { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--cinza); font-style: italic; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+ 
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { display: none; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
+    .corpo { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+ 
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="icone">📚</span>
+    <h2>UNIALFA</h2>
+    <small>Biblioteca</small>
+  </div>
+  <nav>
+    <div class="nav-label">Menu</div>
+    <div class="nav-item ativo"><span class="emoji">📖</span> Acervo</div>
+    <div class="nav-label">Sistema</div>
+    <div class="nav-item" onclick="logout()"><span class="emoji">🚪</span> Sair</div>
+  </nav>
+</aside>
+ 
+<div class="main">
+  <header class="topbar">
+    <h1>Sistema de Biblioteca</h1>
+    <div class="topbar-right"><span class="badge-user">👤 Admin</span></div>
+  </header>
+ 
+  <div class="corpo">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-info"><p>Total</p><span id="total">0</span></div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-info"><p>Disp.</p><span id="disp">0</span></div></div>
+      <div class="stat-card"><div class="stat-icon">📤</div><div class="stat-info"><p>Emp.</p><span id="emp">0</span></div></div>
+    </div>
+ 
+    <!-- FORMULÁRIO -->
+    <div class="form-section">
+      <h3>Adicionar Livro</h3>
+      <div class="form-grid">
+        <div class="form-campo"><label>Título</label><input id="titulo" placeholder="Ex: Dom Casmurro"></div>
+        <div class="form-campo"><label>Autor</label><input id="autor" placeholder="Ex: Machado de Assis"></div>
+        <div class="form-campo"><label>Categoria</label><input id="categoria" placeholder="Ex: Romance"></div>
+        <div class="form-campo"><label>Código</label><input id="código" placeholder="00000000"></div>
+      </div>
+      <div class="form-footer">
+        <button class="btn-primary" onclick="adicionar()">+ Adicionar</button>
+        <span class="status-msg" id="statusMsg">Sucesso!</span>
+      </div>
+    </div>
+ 
+    <!-- LISTA -->
+    <div class="lista-header">
+      <h3>Acervo</h3>
+      <input class="busca-input" id="busca" placeholder="🔍 Buscar livro ou autor…" oninput="filtrar()">
+    </div>
+ 
+    <div id="lista"><div class="loading">Carregando...</div></div>
+    
+    <!-- PAGINAÇÃO REFORÇADA -->
+    <div class="paginacao-container" id="containerPaginacao" style="display:none;">
+      <div class="pag-info" id="pagInfo">Página 1 de 1</div>
+      <div class="paginacao-botoes" id="paginacao"></div>
+    </div>
+  </div>
+</div>
+ 
+<script>
+
+const TOKEN = localStorage.getItem("token");
+
+let todosLivros = [
+  {
+    id: 1,
+    titulo: "Clean Code",
+    autor: "Robert C. Martin",
+    categoria: "Programação",
+    imagem: "imagens/cleancode.jpg",
+    status: "Disponível"
+  },
+  {
+    id: 2,
+    titulo: "Cálculo 1",
+    autor: "James Stewart",
+    categoria: "Matemática",
+    imagem: "imagens/calculo1.png",
+    status: "Emprestado"
+  },
+  {
+    id: 3,
+    titulo: "Sistemas Operacionais Modernos",
+    autor: "Tanenbaum",
+    categoria: "Sistemas",
+    imagem: "imagens/sop.jpg",
+    status: "Disponível"
+  },
+  {
+    id: 4,
+    titulo: "Redes de Computadores",
+    autor: "Tanenbaum",
+    categoria: "Redes",
+    imagem: "imagens/redes.jpeg",
+    status: "Disponível"
+  },
+  {
+    id: 5,
+    titulo: "Arquitetura de Computadores",
+    autor: "Tanenbaum",
+    categoria: "Hardware",
+    imagem: "imagens/arq.jpeg",
+    status: "Disponível"
+  },
+  {
+    id: 6,
+    titulo: "Engenharia de Software",
+    autor: "Ian Sommerville",
+    categoria: "Software",
+    imagem: "imagens/engsoft.jpg",
+    status: "Disponível"
+  },
+  {
+    id: 7,
+    titulo: "Pentest em Redes Sem Fio",
+    autor: "Vários Autores",
+    categoria: "Segurança",
+    imagem: "imagens/pentest.jpg",
+    status: "Disponível"
+  },
+  {
+    id: 8,
+    titulo: "Banco de Dados",
+    autor: "Elmasri & Navathe",
+    categoria: "Sistemas",
+    imagem: "imagens/bancodados.jpeg",
+    status: "Emprestado"
+  },
+  {
+    id: 9,
+    titulo: "Álgebra Linear",
+    autor: "Boldrini",
+    categoria: "Matemática",
+    imagem: "imagens/algebra.png",
+    status: "Disponível"
+  },
+  {
+    id: 10,
+    titulo: "Java - Use a Cabeça!",
+    autor: "Kathy Sierra & Bert Bates",
+    categoria: "Programação",
+    imagem: "imagens/java.jpg",
+    status: "Disponível"
+  },
+  {
+    id: 11,
+    titulo: "Data Science do Zero",
+    autor: "Joel Grus",
+    categoria: "Data Science",
+    imagem: "imagens/datas.jpeg",
+    status: "Disponível"
+  },
+  {
+    id: 12,
+    titulo: "Fundamentos da Arquitetura de Software",
+    autor: "Mark Richards & Neal Ford",
+    categoria: "Software",
+    imagem: "imagens/fund.jpg",
+    status: "Disponível"
+  }
+];
+
+const livrosPorPagina = 8;
+let paginaAtual = 1;
+
+window.onload = () => {
+  renderizar();
+};
+
+  async function carregar(pagina = 1) {
+    try {
+      const res = await fetch(API, { headers: { authorization: TOKEN } });
+      const data = await res.json();
+      todosLivros = Array.isArray(data) ? data : (data.livros || []);
+      paginaAtual = pagina;
+      renderizar();
+    } catch (e) {
+      document.getElementById("lista").innerHTML = `<div class="vazio"><p>⚠ Conecte sua API em: ${API}</p></div>`;
+    }
+  }
+ 
+  function renderizar() {
+    const lista = document.getElementById("lista");
+    const termo = document.getElementById("busca").value.toLowerCase();
+ 
+    const filtrados = todosLivros.filter(l =>
+      l.titulo.toLowerCase().includes(termo) || l.autor.toLowerCase().includes(termo)
+    );
+ 
+    // Atualiza Stats
+    document.getElementById("total").textContent = todosLivros.length;
+    document.getElementById("disp").textContent  = todosLivros.filter(l => l.status === "Disponível").length;
+    document.getElementById("emp").textContent   = todosLivros.length - parseInt(document.getElementById("disp").textContent);
+ 
+    if (filtrados.length === 0) {
+      lista.innerHTML = `<div class="vazio"><p>Nenhum livro encontrado</p></div>`;
+      document.getElementById("containerPaginacao").style.display = "none";
+      return;
+    }
+ 
+    // Lógica de Paginação
+    const totalPaginas = Math.ceil(filtrados.length / livrosPorPagina);
+    if (paginaAtual > totalPaginas) paginaAtual = Math.max(1, totalPaginas);
+    
+    const inicio = (paginaAtual - 1) * livrosPorPagina;
+    const livrosExibidos = filtrados.slice(inicio, inicio + livrosPorPagina);
+ 
+    lista.innerHTML = livrosExibidos.map(livro => `
+      <div class="livro">
+        <img class="livro-capa" src="${livro.imagem || 'https://via.placeholder.com/170x210?text=Capa'}" alt="Capa">
+        <div class="livro-info">
+          <div class="livro-titulo">${livro.titulo}</div>
+          <div class="livro-autor">${livro.autor}</div>
+          <div class="livro-categoria">${livro.categoria}</div>
+          <span class="livro-status ${livro.status === 'Disponível' ? 'disp' : 'emp'}">${livro.status}</span>
+          <div class="livro-acoes">
+            <button class="btn-acao btn-toggle" onclick="alternarStatus(${livro.id}, '${livro.status}')">
+              ${livro.status === 'Disponível' ? 'Emprestar' : 'Devolver'}
+            </button>
+            <button class="btn-acao btn-remover" onclick="remover(${livro.id})">Remover</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+ 
+    // Mostrar/Esconder container de paginação
+    const container = document.getElementById("containerPaginacao");
+    if (totalPaginas > 1) {
+        container.style.display = "flex";
+        document.getElementById("pagInfo").textContent = `Página ${paginaAtual} de ${totalPaginas}`;
+        
+        let htmlBotoes = "";
+        for (let i = 1; i <= totalPaginas; i++) {
+          htmlBotoes += `<button onclick="mudarPagina(${i})" class="btn-pag ${i === paginaAtual ? 'ativo' : ''}">${i}</button>`;
+        }
+        document.getElementById("paginacao").innerHTML = htmlBotoes;
+    } else {
+        container.style.display = "none";
+    }
+  }
+ 
+  function mudarPagina(p) {
+    paginaAtual = p;
+    renderizar();
+    window.scrollTo({ top: document.getElementById('lista').offsetTop - 120, behavior: 'smooth' });
+  }
+ 
+  function filtrar() {
+    paginaAtual = 1;
+    renderizar();
+  }
+ 
+  async function adicionar() {
+    const titulo = document.getElementById("titulo").value.trim();
+    const autor = document.getElementById("autor").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
+    let imagem = document.getElementById("imagem").value.trim();
+ 
+    if (!titulo || !autor || !categoria) { mostrarStatus("⚠ Preencha os campos!", true); return; }
+    if (!imagem) imagem = "https://via.placeholder.com/170x210?text=Livro";
+ 
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", authorization: TOKEN },
+        body: JSON.stringify({ titulo, autor, categoria, imagem, status: "Disponível" })
+      });
+      if (res.ok) {
+        mostrarStatus("✓ Livro adicionado!");
+        document.querySelectorAll(".form-campo input").forEach(i => i.value = "");
+        carregar(1);
+      }
+    } catch (e) { mostrarStatus("⚠ Erro ao salvar", true); }
+  }
+ 
+  async function alternarStatus(id, statusAtual) {
+    const novoStatus = statusAtual === "Disponível" ? "Emprestado" : "Disponível";
+    try {
+        await fetch(`${API}/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", authorization: TOKEN },
+          body: JSON.stringify({ status: novoStatus })
+        });
+        carregar(paginaAtual);
+    } catch (e) { console.error(e); }
+  }
+ 
+  async function remover(id) {
+    if (!confirm("Remover este livro?")) return;
+    try {
+        await fetch(`${API}/${id}`, { method: "DELETE", headers: { authorization: TOKEN } });
+        carregar(paginaAtual);
+    } catch (e) { console.error(e); }
+  }
+ 
+  function mostrarStatus(msg, erro = false) {
+    const el = document.getElementById("statusMsg");
+    el.textContent = msg;
+    el.style.color = erro ? "#C0000C" : "#1E7A40";
+    el.classList.add("visivel");
+    setTimeout(() => el.classList.remove("visivel"), 3000);
+  }
+
+  function logout() { localStorage.clear(); window.location.href = "login.html"; }
+ 
+  carregar();
+</script>
+</body>
+</html>

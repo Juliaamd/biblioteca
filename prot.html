@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Biblioteca UNIALFA</title>
+
+<!-- Fonte -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Ícones -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --vermelho: #C0000C;
+  --vermelho-esc: #5A0006;
+  --bg: #0f0f11;
+  --glass: rgba(255,255,255,0.06);
+  --borda: rgba(255,255,255,0.12);
+}
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FUNDO PREMIUM */
+body {
+  font-family: 'Inter', sans-serif;
+  height: 100vh;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(192,0,12,0.15), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(255,255,255,0.06), transparent 40%),
+    linear-gradient(160deg, #0f0f11, #0a0a0c);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: fadeIn 0.6s ease;
+}
+
+/* CONTAINER */
+.container {
+  display: flex;
+  width: 1000px;
+  height: 560px;
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 30px 100px rgba(0,0,0,0.7);
+}
+
+/* ESQUERDA */
+.left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 50px;
+  background: linear-gradient(160deg, var(--vermelho), var(--vermelho-esc));
+  overflow: hidden;
+}
+
+/* TEXTURA DE LIVROS */
+.left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 26px,
+      rgba(255,255,255,0.05) 26px,
+      rgba(255,255,255,0.05) 28px
+    );
+
+  opacity: 0.4;
+}
+
+/* LUZ PREMIUM */
+.left::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+  top: -100px;
+  right: -100px;
+}
+
+/* LOGO */
+.logo-box {
+  position: relative;
+  z-index: 2;
+}
+
+.logo-box i {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 15px;
+}
+
+.logo {
+  font-size: 38px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.subtitle {
+  font-size: 22px;
+  opacity: 0.9;
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* DIREITA */
+.right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass);
+  backdrop-filter: blur(25px);
+}
+
+/* FORM */
+.form {
+  width: 80%;
+  max-width: 320px;
+  animation: fadeUp 0.6s ease;
+}
+
+.form h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.form p {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* INPUT */
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-group i {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  color: #777;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border-radius: 8px;
+  border: 1px solid var(--borda);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  outline: none;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.input-group input:focus {
+  border-color: var(--vermelho);
+  box-shadow: 0 0 0 3px rgba(192,0,12,0.25);
+  transform: scale(1.02);
+}
+
+/* BOTÃO */
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--vermelho), var(--vermelho-esc));
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(192,0,12,0.5);
+}
+
+/* ERRO */
+.erro {
+  color: #ff4d4d;
+  font-size: 14px;
+  display: none;
+  margin-bottom: 10px;
+}
+
+/* ANIMAÇÕES */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+  .left {
+    height: 200px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- ESQUERDA -->
+  <div class="left">
+    <div class="logo-box">
+      <i data-lucide="library"></i>
+      <div class="logo">UNIALFA</div>
+      <div class="subtitle">Sistema de Biblioteca</div>
+    </div>
+  </div>
+
+  <!-- DIREITA -->
+  <div class="right">
+    <div class="form">
+      <h2>Login</h2>
+      <p>Acesse sua conta</p>
+
+      <div class="erro" id="erro">Usuário ou senha inválidos</div>
+
+      <div class="input-group">
+        <i data-lucide="user"></i>
+        <input id="email" placeholder="Usuário">
+      </div>
+
+      <div class="input-group">
+        <i data-lucide="lock"></i>
+        <input id="senha" type="password" placeholder="Senha">
+      </div>
+
+      <button onclick="login()">Entrar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+const DEV = true;
+
+if (!DEV && localStorage.getItem("logado") === "true") {
+  window.location.href = "dashboard.html";
+}
+
+/* LOGIN */
+function login() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  const erro = document.getElementById("erro");
+
+  if (email === "admin" && senha === "123") {
+    localStorage.setItem("logado", "true");
+    localStorage.setItem("token", "segredo123");
+    window.location.href = "dashboard.html";
+  } else {
+    erro.style.display = "block";
+  }
+}
+
+/* ENTER */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") login();
+});
+</script>
+
+</body>
+</html>
